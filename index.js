@@ -1,3 +1,6 @@
+// importing readlineSync
+
+let readlineSync=require("readline-sync");
 
 // Define a database with questions, options and the answers
 
@@ -419,12 +422,49 @@ const database={
 
 
 function showQuestions() {
-    let category = database.categories[0]; // First category (JavaScript)
-    for (let i = 0; i < category.data.length; i++) {
-        console.log("Question : "+i);
-        console.log(category.data[i].question);
-        console.log(category.data[i].options);
-        console.log(category.data[i].answer);
+    let categoryInput = readlineSync.question("Enter a category (JavaScript or SQL): ").toLowerCase();
+
+    let selectedCategory = null;
+    for (let j = 0; j < database.categories.length; j++) {
+        if (database.categories[j].name.toLowerCase() === categoryInput) {
+            selectedCategory = database.categories[j];
+            break;
+        }
     }
+
+    if (!selectedCategory) {
+        console.log("Invalid category. Please choose from JavaScript or SQL.");
+        return;
+    }
+
+    
+
+    let score=0;
+
+    console.log(`Starting a quiz for ${selectedCategory.name}\n`)
+
+    for (let i = 0; i < selectedCategory.data.length; i++) {
+        console.log(`Q${i+1}-${selectedCategory.data[i].question}`);
+        for(let key in selectedCategory.data[i].options){
+            console.log(`${key}) ${selectedCategory.data[i].options[key]} `);
+        }
+        
+        let userAnswr=readlineSync.question("Enter your answer : ").toLowerCase();
+        if(userAnswr==selectedCategory.data[i].answer){
+            console.log("✅Correct");
+            score++;
+        }
+        else{
+            console.log("❌Incorrect");
+            console.log(`Correct answer ${selectedCategory.data[i].answer}`)
+        }
+
+
+    }
+    console.log("Your Final score is : "+score);
 }
+
+
+
+
 showQuestions();
